@@ -1,0 +1,19 @@
+{%extends "layout.html" %}
+
+{% block title%}
+Vuelos
+{% endblock %}
+
+{% block body %}
+<h1>TODOS LOS VUELOS</h1>
+
+<ul>
+    {% for vuelo in vuelos %}
+    <li>
+        <a href="{{ url_for('vuelo', vuelo_id=vuelo.id) }}">
+        {{ vuelo.origen }} a {{vuelo.destino}}
+    </a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

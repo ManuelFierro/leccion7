@@ -18,7 +18,7 @@ def index():
     return render_template("index.html", vuelos=vuelos)
 
 
-@app.route("/book", method=["POST"])
+@app.route("/book", methods=["POST"])
 def book():
     """ Reserva un vuelo """
     nombre = request.form.get("nombre")
@@ -35,5 +35,19 @@ def book():
     return render_template("success.html")
 
 
-if __name__ == "__main__":
-    main()
+@app.route("/vuelos")
+def vuelos():
+    """ Listado de los vuelos """
+    vuelos = db.execute("SELECT * FROM vuelos").fetchall()
+    return render_template("vuelos.html", vuelos=vuelos)
+
+
+@app.route("/vuelo/<int:vuelo_id>")
+def vuelo(vuelo_id):
+    """ Listado de los detalles del vuelo """
+    vuelo = db.execute("SELECT * FROM vuelos WHERE id = :id", {"id": vuelo_id}).fetchone()
+    if vuelo is None:
+        return render_template("error.html", message="No existe ese vuelo")
+    pasajeros = db.execute("SELECT * FROM pasajeros WHERE vuelo_id = :vuelo_id",
+                           {"vuelo_id": vuelo_id}).fetchall()
+    return render_template("vuelo.html", vuelo=vuelo, pasajeros=pasajeros)
